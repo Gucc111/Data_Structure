@@ -96,19 +96,38 @@ class LinkedList:
             node.next = curr.next
             curr.next = node
 
+    def remove(self, idx):
+        if idx < 0 or idx > self.len:
+            raise ValueError('Invalid Index')
+        
+        self.len -= 1
+        if idx == 0:
+            self.head = self.head.next
+        else:
+            n = 0
+            curr = self.head
+            while n < idx:
+                curr = curr.head
+                n += 1
+            curr.next = curr.next.next
+
     def __len__(self):
         return self.len
 
     def __repr__(self):
-        curr = self.head
+        return f'{self.head}'
 
 def test():
     a = LinkedList()
     a.insert(0, 1)
     a.insert(0, 2)
     a.insert(2, 3)
+    a.insert(2, 4)
     print(len(a))
-    print(a.head)
+    print(a)
+    a.remove(3)
+    print(len(a))
+    print(a)
 
 if __name__ == '__main__':
     test()
