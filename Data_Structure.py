@@ -307,28 +307,15 @@ class LinkQueue:
     def __len__(self) -> int:
         return len(self._data)
 
-def test():
-    a = LinkedList()
-    for i in range(5):
-        a.insert(i, i + 1)
-    print(a)
-    print(a.head)
-    print()
+    def __iter__(self):
+        return iter(self._data)
 
+def test():
     b = LinkQueue()
-    print(b)
     for i in range(5):
         b.push(i + 1)
-    print(b)
-    print(b.head)
-    print(b.tail)
-    print(b.front())
-    print()
-    print(b.pop())
-    print(b)
-    print(b.head)
-    print(b.tail)
-    print(b.front())
+    for i in b:
+        print(i.val)
 
 if __name__ == '__main__':
     test()
