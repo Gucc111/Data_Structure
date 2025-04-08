@@ -35,6 +35,7 @@ class SequentialList:
         for i, j in enumerate(self.elements[:self.size]):
             if j == val:
                 return i
+        
         return -1
 
     def modify(self, idx: int, val: Any) -> None:
@@ -46,6 +47,7 @@ class SequentialList:
     def _resize(self) -> None:
         self.capacity = self.capacity * 2
         new_elements = [0] * self.capacity
+        
         for i in range(self.size):
             new_elements[i] = self.elements[i]
         self.elements = new_elements
@@ -125,6 +127,7 @@ class LinkedList:
                 return idx
             idx += 1
             curr = curr.next
+
         return -1
 
     def modify(self, idx: int, val: Any) -> None:
@@ -154,6 +157,7 @@ class LinkedList:
         while n < idx:
             curr = curr.next
             n += 1
+
         return curr
 
 
@@ -167,11 +171,13 @@ class ArrayStack:
     def pop(self) -> Any:
         if self.is_empty():
             raise IndexError('Pop from empty stack')
+
         return self.data.pop()
 
     def top(self) -> Any:
         if self.is_empty():
             raise IndexError('Peek from empty stack')
+
         return self.data[-1]
 
     def is_empty(self) -> bool:
@@ -210,6 +216,7 @@ class LinkStack:
     def top(self) -> Any:
         if self.is_empty():
             raise IndexError('Peek from empty stack')
+
         return self.head.val
 
     def is_empty(self) -> bool:
@@ -235,11 +242,13 @@ class ArrayQueue:
     def pop(self) -> Any:
         if self.is_empty():
             raise IndexError('Pop from empty queue')
+
         return self.data.pop(0)
 
     def front(self) -> Any:
         if self.is_empty():
             raise IndexError('Peek from empty queue')
+
         return self.data[0]
 
     def is_empty(self) -> bool:
@@ -258,45 +267,68 @@ class ArrayQueue:
 class LinkQueue:
     def __init__(self) -> None:
         self._data = LinkedList()
-        self.head = None
+
+    @property
+    def head(self) -> ListNode:
+        return self._data.head
 
     @property
     def tail(self) -> ListNode:
-        return self._data.head
+        curr = self.head
+        while curr.next:
+            curr = curr.next
+        
+        return curr
 
     def push(self, val: Any):
-        self._data.insert(0, val)
-        if not self.head:
-            self.head = self._data.head
+        self._data.insert(len(self), val)
 
     def pop(self) -> Any:
         if self.is_empty():
             raise IndexError('Pop from empty queue')
         
+        pop_item = self.head
         self._data.remove(0)
+
+        return pop_item
+
+    def front(self) -> Any:
+        if self.is_empty():
+            raise IndexError('Peek from empty queue')
+        
+        return self.head.val
 
     def is_empty(self) -> bool:
         return self.head is None
 
     def __repr__(self) -> str:
-        curr = self.tail
-        next = None
-        while curr:
-            temp = curr.next
-            curr.next = next
-            next = curr
-            curr = temp
-        return f'{next}'
+        return f'{self.head}'
+
+    def __len__(self) -> int:
+        return len(self._data)
 
 def test():
-    a = LinkQueue()
-    print(a.is_empty())
+    a = LinkedList()
     for i in range(5):
-        a.push(i + 1)
-    print(a.is_empty())
+        a.insert(i, i + 1)
     print(a)
     print(a.head)
-    print(a.tail)
+    print()
+
+    b = LinkQueue()
+    print(b)
+    for i in range(5):
+        b.push(i + 1)
+    print(b)
+    print(b.head)
+    print(b.tail)
+    print(b.front())
+    print()
+    print(b.pop())
+    print(b)
+    print(b.head)
+    print(b.tail)
+    print(b.front())
 
 if __name__ == '__main__':
     test()
