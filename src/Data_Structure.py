@@ -82,7 +82,7 @@ class ListNode:
 
 class LinkedList:
     def __init__(self) -> None:
-        self.head = None
+        self.head: Optional[ListNode] = None
         self.len = 0
 
     def insert(self, idx: int, val: Any) -> None:
@@ -272,14 +272,6 @@ class LinkQueue:
     def head(self) -> ListNode:
         return self._data.head
 
-    @property
-    def tail(self) -> ListNode:
-        curr = self.head
-        while curr.next:
-            curr = curr.next
-        
-        return curr
-
     def push(self, val: Any):
         self._data.insert(len(self), val)
 
@@ -360,3 +352,111 @@ class QueueStack:
 
     def __iter__(self) -> Iterator:
         return iter(self.data)
+
+
+class StackQueue:
+    def __init__(self) -> None:
+        self.data = ArrayStack()
+
+    def push(self, val: Any) -> None:
+        self.data.push(val)
+
+    def pop(self) -> Any:
+        if self.is_empty():
+            raise IndexError('Pop from empty queue')
+        
+        temp = ArrayStack()
+        while len(self) != 1:
+            temp.push(self.data.pop())
+        
+        pop_item = self.data.pop()
+
+        while not temp.is_empty():
+            self.data.push(temp.pop())
+        
+        return pop_item
+
+    def front(self) -> Any:
+        if self.is_empty():
+            raise IndexError('Pop from empty queue')
+        
+        temp = ArrayStack()
+        while len(self) != 1:
+            temp.push(self.data.pop())
+        
+        head = self.data.top()
+        temp.push(self.data.pop())
+
+        while not temp.is_empty():
+            self.data.push(temp.pop())
+        
+        return head
+
+    def is_empty(self) -> bool:
+        return len(self) == 0
+
+    def __repr__(self) -> str:
+        return f'{self.data}'
+
+    def __len__(self) -> str:
+        return len(self.data)
+
+    def __iter__(self) -> Iterator:
+        return iter(self.data)
+
+
+class TreeNode:
+    def __init__(self) -> None:
+        self.val = None
+        self.childrenlist: list[TreeNode] = []
+
+    @property
+    def degree(self):
+        return len(self.childrenlist)
+
+    def add_child(self, child_node: 'TreeNode') -> None:
+        self.childrenlist.append(child_node)
+
+class Tree:
+    def __init__(self, n: int) -> None:
+        self.root: Optional[TreeNode] = None
+        self.nodes = [TreeNode() for _ in range(n)]
+
+    @property
+    def degree(self):
+        n = 0
+        for node in self.nodes:
+            if node.degree > n:
+                n = node.degree
+        
+        return n
+
+    def get_treenode(self, id: int) -> TreeNode:
+        return self.nodes[id]
+
+    def set_root(self, id: int) -> None:
+        self.root = self.get_treenode(id)
+
+    def add_child(self, parent_id: int, child_id) -> None:
+        parent_node = self.get_treenode(parent_id)
+        if isinstance(child_id, int):
+            child_node = self.get_treenode(child_id)
+            parent_node.add_child(child_node)
+        else:
+            for id in child_id:
+                child_node = self.get_treenode(id)
+                parent_node.add_child(child_node)
+
+    def assign_data(self, id: int, val: Any) -> None:
+        node = self.get_treenode(id)
+        node.val = val
+
+    def dfs(self, node = None) -> str:
+        if node is None:
+            node = self.root
+        print(node.val, end=' ')
+        for child in node.childrenlist:
+            self.dfs(child)
+
+    def __repr__(self) -> str:
+        return f'{[node.val for node in self.nodes]}'
