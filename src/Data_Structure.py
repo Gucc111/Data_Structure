@@ -53,7 +53,7 @@ class SequentialList:
         self.elements = new_elements
 
     def is_empty(self) -> bool:
-        return self.size == 0
+        return len(self) == 0
     
     def __repr__(self) -> str:
         return f'Sequential List: {self.elements[:self.size]}'
@@ -134,7 +134,7 @@ class LinkedList:
         self[idx].val = val
 
     def is_empty(self) -> bool:
-        return self.len == 0
+        return len(self) == 0
 
     def __repr__(self) -> str:
         return f'{self.head}'
@@ -252,7 +252,7 @@ class ArrayQueue:
         return self.data[0]
 
     def is_empty(self) -> bool:
-        return len(self.data) == 0
+        return len(self) == 0
 
     def __repr__(self) -> str:
         return f'{self.data}'
@@ -307,15 +307,56 @@ class LinkQueue:
     def __len__(self) -> int:
         return len(self._data)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         return iter(self._data)
 
-def test():
-    b = LinkQueue()
-    for i in range(5):
-        b.push(i + 1)
-    for i in b:
-        print(i.val)
 
-if __name__ == '__main__':
-    test()
+class QueueStack:
+    def __init__(self) -> None:
+        self.data = ArrayQueue()
+
+    def push(self, val: Any) -> None:
+        self.data.push(val)
+
+    def pop(self):
+        if self.is_empty():
+            raise IndexError('Pop from empty stack')
+        
+        temp = ArrayQueue()
+        while len(self) != 1:
+            temp.push(self.data.pop())
+        
+        pop_item = self.data.pop()
+        
+        while not temp.is_empty():
+            self.data.push(temp.pop())
+        
+        return pop_item
+
+    def top(self) -> Any:
+        if self.is_empty():
+            raise IndexError('Peek from empty stack')
+        
+        temp = ArrayQueue()
+        while len(self) != 1:
+            temp.push(self.data.pop())
+        
+        head = self.data.front()
+        temp.push(self.data.pop())
+
+        while not temp.is_empty():
+            self.data.push(temp.pop())
+        
+        return head
+
+    def is_empty(self) -> bool:
+        return len(self) == 0
+
+    def __repr__(self) -> str:
+        return f'{self.data}'
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __iter__(self) -> Iterator:
+        return iter(self.data)
