@@ -411,7 +411,7 @@ class TreeNode:
         self.childrenlist: list[TreeNode] = []
 
     @property
-    def degree(self):
+    def degree(self) -> int:
         return len(self.childrenlist)
 
     def add_child(self, child_node: 'TreeNode') -> None:
@@ -460,3 +460,63 @@ class Tree:
 
     def __repr__(self) -> str:
         return f'{[node.val for node in self.nodes]}'
+
+
+class BinaryTreeNode:
+    def __init__(self, val: Any = None, left: Optional['BinaryTreeNode'] = None, right: Optional['BinaryTreeNode'] = None) -> None:
+        self.val = val
+        self.left = left
+        self.right = right
+
+class BinaryTree:
+    def __init__(self, n: int) -> None:
+        self.root = None
+        self.nodes = [BinaryTreeNode() for _ in range(n)]
+        self.node_size = n
+
+    def get_treenode(self, id: int) -> BinaryTreeNode:
+        return self.nodes[id]
+
+    def visit(self, node: BinaryTreeNode) -> str:
+        print(node.val, end='')
+
+    def create(self, data: list, id: int) -> Optional[BinaryTreeNode]:
+        if id >= len(data) or data[id] == None:
+            return None
+        
+        node = self.get_treenode(id)
+        node.val = data[id]
+        node.left = self.create(data, id * 2)
+        node.right = self.create(data, id * 2 + 1)
+
+        return node
+
+    def create_tree(self, data: list) -> None:
+        self.root = self.create(data, 1)
+
+    def _pre_order(self, node: BinaryTreeNode) -> str:
+        if node:
+            self.visit(node)
+            self._pre_order(node.left)
+            self._pre_order(node.right)
+
+    def preorder_traversal(self) -> str:
+        self._pre_order(self.root)
+
+    def _in_order(self, node: BinaryTreeNode) -> str:
+        if node:
+            self._in_order(node.left)
+            self.visit(node)
+            self._in_order(node.right)
+
+    def inorder_traversal(self) -> str:
+        self._in_order(self.root)
+
+    def _post_order(self, node: BinaryTreeNode) -> str:
+        if node:
+            self._post_order(node.left)
+            self._post_order(node.right)
+            self.visit(node)
+
+    def postorder_traversal(self) -> str:
+        self._post_order(self.root)
