@@ -272,7 +272,7 @@ class LinkQueue:
     def head(self) -> ListNode:
         return self._data.head
 
-    def push(self, val: Any):
+    def push(self, val: Any) -> None:
         self._data.insert(len(self), val)
 
     def pop(self) -> Any:
@@ -310,7 +310,7 @@ class QueueStack:
     def push(self, val: Any) -> None:
         self.data.push(val)
 
-    def pop(self):
+    def pop(self) -> Any:
         if self.is_empty():
             raise IndexError('Pop from empty stack')
         
@@ -423,7 +423,7 @@ class Tree:
         self.nodes = [TreeNode() for _ in range(n)]
 
     @property
-    def degree(self):
+    def degree(self) -> int:
         n = 0
         for node in self.nodes:
             if node.degree > n:
@@ -451,7 +451,7 @@ class Tree:
         node = self.get_treenode(id)
         node.val = val
 
-    def dfs(self, node = None) -> str:
+    def dfs(self, node = None) -> None:
         if node is None:
             node = self.root
         print(node.val, end=' ')
@@ -463,10 +463,18 @@ class Tree:
 
 
 class BinaryTreeNode:
-    def __init__(self, val: Any = None, left: Optional['BinaryTreeNode'] = None, right: Optional['BinaryTreeNode'] = None) -> None:
+    def __init__(
+            self,
+            val: Any = None,
+            left: Optional['BinaryTreeNode'] = None,
+            right: Optional['BinaryTreeNode'] = None
+            ) -> None:
         self.val = val
         self.left = left
         self.right = right
+
+    def __repr__(self) -> str:
+        return f'node: {self.val}, left: {self.left.val}, right: {self.right.val}'
 
 class BinaryTree:
     def __init__(self, n: int) -> None:
@@ -477,7 +485,7 @@ class BinaryTree:
     def get_treenode(self, id: int) -> BinaryTreeNode:
         return self.nodes[id]
 
-    def visit(self, node: BinaryTreeNode) -> str:
+    def visit(self, node: BinaryTreeNode) -> None:
         print(node.val, end='')
 
     def create(self, data: list, id: int) -> Optional[BinaryTreeNode]:
@@ -494,29 +502,101 @@ class BinaryTree:
     def create_tree(self, data: list) -> None:
         self.root = self.create(data, 1)
 
-    def _pre_order(self, node: BinaryTreeNode) -> str:
+    def _pre_order(self, node: BinaryTreeNode) -> None:
         if node:
             self.visit(node)
             self._pre_order(node.left)
             self._pre_order(node.right)
 
-    def preorder_traversal(self) -> str:
+    def preorder_traversal(self) -> None:
         self._pre_order(self.root)
 
-    def _in_order(self, node: BinaryTreeNode) -> str:
+    def _in_order(self, node: BinaryTreeNode) -> None:
         if node:
             self._in_order(node.left)
             self.visit(node)
             self._in_order(node.right)
 
-    def inorder_traversal(self) -> str:
+    def inorder_traversal(self) -> None:
         self._in_order(self.root)
 
-    def _post_order(self, node: BinaryTreeNode) -> str:
+    def _post_order(self, node: BinaryTreeNode) -> None:
         if node:
             self._post_order(node.left)
             self._post_order(node.right)
             self.visit(node)
 
-    def postorder_traversal(self) -> str:
+    def postorder_traversal(self) -> None:
         self._post_order(self.root)
+
+
+class BinarySearchTree:
+    def __init__(self) -> None:
+        self.root = None
+
+    def _insert_node(self, node: BinaryTreeNode, val: Any) -> BinaryTreeNode:
+        if node is None:
+            return BinaryTreeNode(val)
+        
+        if val < node.val:
+            node.left = self._insert_node(node.left, val)
+        elif val > node.val:
+            node.right = self._insert_node(node.right, val)
+        
+        return node
+
+    def insert(self, val: Any) -> None:
+        self.root = self._insert_node(self.root, val)
+
+    def _remove_node(self, node: BinaryTreeNode, val: Any) -> Optional[BinaryTreeNode]:
+        if node is None:
+            return None
+        
+        if val < node.val:
+            node.left = self._remove_node(node.left, val)
+        elif val > node.val:
+            node.right = self._remove_node(node.right, val)
+        else:
+            if node.left is None and node.right is None:
+                return None
+            elif node.left is None:
+                return node.right
+            elif node.right is None:
+                return node.left
+            else:
+                temp = node.right
+                while temp.left:
+                    temp = temp.left
+                node.val = temp.val
+                
+                node.right = self._remove_node(node.right, node.val)
+        
+        return node
+
+    def remove(self, val: Any) -> None:
+        self.root = self._remove_node(self.root, val)
+
+    def _search_node(self, node: BinaryTreeNode, val: Any) -> bool:
+        if node is None:
+            return False
+        
+        if val < node.val:
+            return self._search_node(node.left, val)
+        elif val > node.val:
+            return self._search_node(node.right, val)
+        return True
+
+    def search(self, val: Any) -> bool:
+        return self._search_node(self.root, val)
+
+    def visit(self, node: BinaryTreeNode) -> None:
+        print(node.val, end='')
+
+    def _in_order(self, node: BinaryTreeNode) -> None:
+        if node:
+            self._in_order(node.left)
+            self.visit(node)
+            self._in_order(node.right)
+
+    def inorder_traversal(self) -> None:
+        self._in_order(self.root)
